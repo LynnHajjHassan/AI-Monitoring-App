@@ -1,0 +1,50 @@
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    init: true
+    environment:
+      BRIDGE_TOKEN: ${BRIDGE_TOKEN:-}
+      CAMERA_DEVICE_TOKENS_JSON: ${CAMERA_DEVICE_TOKENS_JSON:-}
+      CAMERA_VIEWER_TOKEN: ${CAMERA_VIEWER_TOKEN:-}
+      INFERENCE_MODE: ${INFERENCE_MODE:-mock}
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5vl:3b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    tmpfs:
+      - /tmp:size=128m
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
+      interval: 20s
+      timeout: 4s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:80"
+    security_opt:
+      - no-new-privileges:true
+
+  # Optional CPU-only inference smoke test (NOT enabled by default).
+  # If you later pass through an NVIDIA GPU and configure GPU-enabled containers,
+  # add the required device reservation/runtime separately; none is assumed here.
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["inference"]
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  ollama_models:

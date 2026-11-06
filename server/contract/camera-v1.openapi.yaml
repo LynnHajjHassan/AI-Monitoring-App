@@ -1,0 +1,124 @@
+openapi: 3.1.0
+info:
+  title: SceneSense Camera API
+  version: 1.0.0
+  description: >-
+    Camera protocol v1 REST inspection endpoints. WSS ingest binary envelope and
+    handshake are normatively defined in docs/CAMERA_PROTOCOL_V1.md.
+servers:
+  - url: http://127.0.0.1:8001
+    description: Standalone local development gateway only
+security:
+  - ViewerBearer: []
+components:
+  securitySchemes:
+    ViewerBearer:
+      type: http
+      scheme: bearer
+      description: A viewer-only token; never send a camera token here.
+  schemas:
+    DeviceStatus:
+      type: object
+      required: [device_id, connected, online, stale, session_id, latest_received_at,
+                 latest_age_seconds, latest_sequence, received_frames, dropped_frames,
+                 evidence_frames, evidence_bytes, connection_count, last_error]
+      properties:
+        device_id: {type: string, example: cam-01}
+        connected: {type: boolean}
+        online: {type: boolean}
+        stale: {type: boolean}
+        session_id: {type: [string, 'null']}
+        latest_received_at: {type: [string, 'null'], format: date-time}
+        latest_age_seconds: {type: [number, 'null']}
+        latest_sequence: {type: [integer, 'null'], minimum: 1}
+        received_frames: {type: integer, minimum: 0}
+        dropped_frames: {type: integer, minimum: 0}
+        evidence_frames: {type: integer, minimum: 0, maximum: 30}
+        evidence_bytes: {type: integer, minimum: 0}
+        connection_count: {type: integer, minimum: 0}
+        last_error: {type: [string, 'null']}
+paths:
+  /api/v1/devices:
+    get:
+      operationId: listCameras
+      summary: List observed camera statuses
+      responses:
+        '200':
+          description: Device statuses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: array
+                    items: {$ref: '#/components/schemas/DeviceStatus'}
+        '401': {description: Invalid or missing viewer token}
+        '503': {description: Viewer token not configured}
+  /api/v1/devices/{device_id}/status:
+    get:
+      operationId: cameraStatus
+      summary: Get status for one camera
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200':
+          description: Camera status
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/DeviceStatus'}
+        '401': {description: Invalid viewer token}
+        '404': {description: Unknown device}
+  /api/v1/devices/{device_id}/latest.jpg:
+    get:
+      operationId: cameraLatestJpeg
+      summary: Latest fresh JPEG from an online camera
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200':
+          description: Latest JPEG
+          headers:
+            Cache-Control:
+              schema: {type: string, example: no-store}
+          content:
+            image/jpeg:
+              schema: {type: string, format: binary}
+        '401': {description: Invalid viewer token}
+        '404': {description: No recent connected camera frame}
+  /api/v1/devices/{device_id}/evidence:
+    get:
+      operationId: cameraEvidenceSummary
+      summary: Recent sampled evidence metadata (not the JPEG bytes)
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200':
+          description: Sampled evidence metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  device_id: {type: string}
+                  sampling_interval_seconds: {type: integer}
+                  window_seconds: {type: integer}
+                  frames:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sequence: {type: integer}
+                        received_at: {type: string, format: date-time}
+                        uptime_us: {type: integer}
+        '401': {description: Invalid viewer token}
+        '404': {description: Unknown device}

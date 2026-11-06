@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SceneSense camera v1 JSON control messages",
+  "oneOf": [
+    {"type":"object","additionalProperties":false,"required":["type","version","device_id"],"properties":{"type":{"const":"hello"},"version":{"const":1},"device_id":{"type":"string","pattern":"^[a-z][a-z0-9_-]{0,31}$"}}},
+    {"type":"object","additionalProperties":false,"required":["type","version","device_id","session_id","limits"],"properties":{"type":{"const":"ready"},"version":{"const":1},"device_id":{"type":"string"},"session_id":{"type":"string","format":"uuid"},"limits":{"type":"object","required":["max_jpeg_bytes","heartbeat_interval_seconds"],"properties":{"max_jpeg_bytes":{"const":1048576},"heartbeat_interval_seconds":{"const":15}}}}},
+    {"type":"object","additionalProperties":false,"required":["type"],"properties":{"type":{"const":"heartbeat"}}},
+    {"type":"object","additionalProperties":false,"required":["type"],"properties":{"type":{"const":"heartbeat_ack"}}}
+  ]
+}
