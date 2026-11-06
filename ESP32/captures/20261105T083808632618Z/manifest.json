@@ -1,0 +1,53 @@
+{
+  "source_type": "esp32",
+  "evidence_type": "sampled_frames",
+  "frame_count": 5,
+  "time_window": {
+    "start": "2026-11-05T08:38:03.634698+00:00",
+    "end": "2026-11-05T08:38:07.865436+00:00",
+    "clock": "laptop UTC request/receive bounds, not sensor exposure time"
+  },
+  "limitations": "Sampled frames can miss brief events. Device uptime is not UTC. JPEG markers are checked; full image decoding is not performed.",
+  "frames": [
+    {
+      "request_started_at": "2026-11-05T08:38:03.634698+00:00",
+      "received_at": "2026-11-05T08:38:03.836311+00:00",
+      "device_id": "cam-01",
+      "capture_uptime_us": "3069585",
+      "file": "frame-000.jpg",
+      "bytes": 17654
+    },
+    {
+      "request_started_at": "2026-11-05T08:38:04.634426+00:00",
+      "received_at": "2026-11-05T08:38:04.835425+00:00",
+      "device_id": "cam-01",
+      "capture_uptime_us": "27123592",
+      "file": "frame-001.jpg",
+      "bytes": 20635
+    },
+    {
+      "request_started_at": "2026-11-05T08:38:05.633711+00:00",
+      "received_at": "2026-11-05T08:38:05.795599+00:00",
+      "device_id": "cam-01",
+      "capture_uptime_us": "28024506",
+      "file": "frame-002.jpg",
+      "bytes": 20134
+    },
+    {
+      "request_started_at": "2026-11-05T08:38:06.640367+00:00",
+      "received_at": "2026-11-05T08:38:06.757371+00:00",
+      "device_id": "cam-01",
+      "capture_uptime_us": "29105572",
+      "file": "frame-003.jpg",
+      "bytes": 20357
+    },
+    {
+      "request_started_at": "2026-11-05T08:38:07.633246+00:00",
+      "received_at": "2026-11-05T08:38:07.865436+00:00",
+      "device_id": "cam-01",
+      "capture_uptime_us": "30006473",
+      "file": "frame-004.jpg",
+      "bytes": 20362
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "url": "http://192.168.2.160:81/api/v1/stream",
+  "elapsed_seconds": 30.11,
+  "frames": 144,
+  "observed_fps": 4.78,
+  "first_frame_ms": 375.0,
+  "average_jpeg_kib": 17.3,
+  "max_jpeg_kib": 17.9,
+  "median_gap_ms": 187.0,
+  "p95_gap_ms": 328.0,
+  "max_gap_ms": 1609.0,
+  "device_timestamps_seen": 144,
+  "device_timestamp_nonmonotonic": 0,
+  "note": "Receiver delivery metrics only; true end-to-end latency not measured"
+}

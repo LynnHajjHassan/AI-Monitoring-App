@@ -1,0 +1,12 @@
+// ADD to your EXISTING src/main.cpp, alongside its existing includes:
+#include "mjpeg_stream.h"
+
+// ADD inside EXISTING setup(), AFTER camera initialization,
+// Wi-Fi connection, and your existing port-80 HTTP API startup:
+if (!startMjpegServer()) {
+  Serial.println("ERROR: MJPEG stream server failed to start");
+}
+
+// DO NOT add another setup(), loop(), esp_camera_init() or Wi-Fi credential.
+// DO NOT replace your current /health, /api/v1/status, /api/v1/capture handlers.
+// NEW URL: http://CAMERA_IP:81/api/v1/stream
